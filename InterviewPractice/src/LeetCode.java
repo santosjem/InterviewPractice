@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Stack;
 
 /*
  * All of the solutions added on here are answers to problems
@@ -9,10 +11,26 @@ import java.util.HashSet;
  */
 
 public class LeetCode {
-	public class ListNode {
+	public static class ListNode {
 		int val;
 		ListNode next;
 		ListNode(int x) { val = x; }
+	}
+	
+	public static class Pair<T1, T2> {
+		T1 val1;
+		T2 val2;
+		Pair(T1 v1, T2 v2) {
+			val1 = v1;
+			val2 = v2;
+		}
+	}
+	
+	public static class TreeNode {
+		int val;
+		TreeNode left;
+		TreeNode right;
+		TreeNode(int x) { val = x; }
 	}
 	
 	public boolean isAnagram(String s, String t) {
@@ -88,8 +106,289 @@ public class LeetCode {
         return ret; 
     }
 	
+	public boolean isPalindrome(ListNode head) {
+		if(head == null) return true;
+		
+		ListNode rev = reverse(head);
+		while(head.next != null) {
+			if(head.val != rev.val) {
+				return false;
+			}
+			head = head.next;
+			rev = rev.next;
+		}
+		return true;
+	}
+	
+	public static ListNode reverse(ListNode head) {
+		ListNode prev = null;
+	    while (head != null) {
+	        ListNode next = head.next;
+	        head.next = prev;
+	        prev = head;
+	        head = next;
+	    }
+	    return prev;
+	}
+	
+	public static class MinStack {
+	    /** initialize your data structure here. */
+	    int min;
+	    Stack<Integer> stack;
+	    ArrayList<Integer> minStack = new ArrayList<>();
+		
+	    public MinStack() {
+	        stack = new Stack<>();
+	    }
+	    
+	    public void push(int x) {
+	    	if(stack.isEmpty()) {
+	    		stack.push(x);
+	    		minStack.add(x);
+	    		min = x;
+	    	} else {
+	    		stack.push(x);
+	    		if(x <= min) {
+		        	min = x;
+		        	minStack.add(x);
+		        }
+	    	}
+	    	
+	    }
+	    
+	    public void pop() {
+	        if(stack.isEmpty()) return;
+	        
+	        int x = stack.pop();
+	        if(minStack.contains((Object) x)) {
+	        	minStack.remove((Object) x);
+	        }
+	        
+	        if(minStack.isEmpty()) {
+	        	min = 0;
+	        } else {
+	        	min = minStack.get(minStack.size() - 1);
+	        }
+	    }
+	    
+	    public int top() {
+	        return stack.peek();
+	    }
+	    
+	    public int getMin() {
+	        return min;
+	    }
+	    
+	}
+	
+	public boolean isSymmetric(TreeNode root) {
+		return root == null || isSymmetric(root.left, root.right);
+	}
+	
+	public boolean isSymmetric(TreeNode left, TreeNode right) {
+		if(left == null || right == null) {
+			return left == right;
+		}
+		
+		if(left.val != right.val) {
+			return false;
+		}
+		
+		return isSymmetric(left.left, right.right) && isSymmetric(left.right, right.left); 	
+	}
+	
+	public static List<Integer> topKFrequent(int[] nums, int k) {
+        List<Integer> ret = new ArrayList<>();
+        List<Pair<Integer, Integer>> temp = new ArrayList<>();
+        
+        
+		
+		
+        return new ArrayList<>();
+    }
+	
+	public static boolean detectCapitalUse(String word) {
+		String start = word.substring(0, 0);
+		String end = word.substring(1, word.length());
+        if(word.toUpperCase() == word) {
+        	return true;
+        } else if (word.toLowerCase() == word) {
+        	return true;
+        } else if (start == start.toUpperCase() && end == end.toLowerCase()){
+        	return true;
+        }
+		
+		return false;
+    }
+	
+	public static int kthSmallest(TreeNode root, int k) {
+		int treeSize = countTree(root);
+		
+		if(k < treeSize) {
+			kthSmallest(root.left, k);
+		} else {
+			kthSmallest(root.right, k - treeSize - 1);
+		}
+		
+		return root.val;
+	}
+	
+	public static int countTree(TreeNode root) {
+		if (root == null) {
+			return 0;
+		} else {
+			return (1 + countTree(root.left) + countTree(root.right)); 
+		}
+		
+	}
+	
+	public static int kthSmallest(int[][] matrix, int k) {
+        int len = matrix.length;
+        int size = len * len;
+		
+		return matrix[(int) Math.floor(size / k)][(k % len) - len];
+    }
+	
+	public static int findDuplicate(int[] nums) {
+		HashSet<Integer> hash = new HashSet<>();
+		
+		for(int i = 0; i < nums.length; i++) {
+			if(hash.contains(nums[i])) {
+				return nums[i];
+			}
+			
+			hash.add(nums[i]);
+		}
+		
+		return 0;
+	}
+	
+	public static String reverseString(String s) {
+		String ret = "";
+        
+        for(int i = 0; i < s.length(); i++) {
+            ret = s.charAt(0) + ret;
+            s = s.substring(1);
+        }
+        
+        return ret;
+	}
+	
+	public TreeNode sortedArrayToBST(int[] nums) {
+        TreeNode ret = new TreeNode(nums[0]);
+        TreeNode fin = ret;
+		int len = nums.length;
+		int half = (int) Math.ceil(len/2);
+        
+        for(int i = 1; i < len; i++) {
+        	TreeNode cur = new TreeNode(nums[i]);
+        	if(i < half) {
+        		cur.left = ret;
+        		ret = cur;
+        	} else {
+        		ret.right = cur;
+        		ret = cur;
+        	}
+        }
+        
+		return fin;
+    }
+	
+	public int numJewelsInStones(String J, String S) {
+        HashSet<Character> hash = new HashSet<>();
+        for(int c = 0; c < J.length(); c++) {
+        	hash.add(J.charAt(c));
+        }
+        
+        int count = 0;
+        for(int i = 0; i < S.length(); i++) {
+        	if(hash.contains(S.charAt(i))) {
+        		count++;
+        	}
+        }
+        return count;
+    }
+	
+	public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> list = new ArrayList<>();
+        subsetsHelper(list, new ArrayList<Integer>(), nums, 0);
+        return list;
+    }
+    
+	public static void subsetsHelper(List<List<Integer>> list, List<Integer> curr, int[] nums, int n) {
+        list.add(new ArrayList<>(curr));
+        
+        if(n != nums.length) {
+	        for(int i = n; i < nums.length; i++) {
+		        curr.add(nums[i]);
+		       	subsetsHelper(list, curr, nums, i);
+		       	curr.remove(curr.size() - 1);
+	        }
+        }
+    } 
+    
+    public static void print(List<Integer> num) {
+    	
+        for(int i = 0; i < num.size(); i++) {
+            System.out.print(num.get(i) + " ");
+        }
+        System.out.println();
+    }
+	
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        permuteHelper(nums, res, new ArrayList<Integer>());
+        return res;
+    }
+    
+    public void permuteHelper(int[]nums, List<List<Integer>> res, List<Integer> temp) {
+        if(temp.size() == nums.length) {
+            res.add(new ArrayList<>(temp));
+        } else {
+            for(int i = 0; i < nums.length; i++) {
+                if(temp.contains(nums[i])) continue;
+                temp.add(nums[i]);
+                permuteHelper(nums, res, temp);
+                temp.remove(temp.size() - 1);
+                
+            }
+        }
+    }
+    
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        Boolean[] used = new Boolean[nums.length];
+        
+        for(int i = 0; i < used.length; i++) {
+        	used[i] = false;
+        }
+        
+        permuteHelper2(nums, res, new ArrayList<Integer>(), used);
+        return res;
+    }
+    
+    public void permuteHelper2(int[]nums, List<List<Integer>> res, List<Integer> temp, Boolean[] used) {
+        if(temp.size() == nums.length && res.contains(temp)) {
+            res.add(new ArrayList<>(temp));
+        } else {
+            for(int i = 0; i < nums.length; i++) {
+                if(temp.contains(nums[i]) && used[i] != true) continue;
+                temp.add(nums[i]);
+                used[i] = true;
+                permuteHelper2(nums, res, temp, used);
+                temp.remove(temp.size() - 1);
+                used[i] = false;
+            }
+        }
+    }
 	
 	public static void main(String[] args) {
-		System.out.println("This is for testing");
+		int[] test = {1, 1, 1, 2, 2, 3};
+		int len = 2;
+		List<Integer> res = topKFrequent(test, len);
+		
+		for(int i = 0; i < len; i++) {
+			System.out.println(res.get(i));
+		}
 	}
 }
