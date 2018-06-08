@@ -1,9 +1,13 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
+
+import javax.activation.MailcapCommandMap;
 
 /*
  * All of the solutions added on here are answers to problems
@@ -33,7 +37,91 @@ public class LeetCode {
 		TreeNode(int x) { val = x; }
 	}
 	
+	public List<String> letterCasePermutation(String S) {
+        List<String> ret = new ArrayList<>();
+        helper(S.toCharArray(), 0, "", ret);
+        return ret;
+        
+    }
+    
+	
+    public void helper(char[] string, int index, String curr, List<String> ret) {
+        if(index == string.length) {
+            ret.add(curr);
+        }  else {
+            if(Character.isLetter(string[index])) {
+                helper(string, index + 1, curr + Character.toLowerCase(string[index]), ret);
+                helper(string, index + 1, curr + Character.toUpperCase(string[index]), ret);                   
+            } else {
+                curr = curr + string[index];
+                helper(string, index + 1, curr, ret);
+            }
+        }
+    }
+    
+    public boolean exist(char[][] board, String word) {
+        if(word == null) {
+            return true;
+        }
+        
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[i].length; j++) {
+                if(board[i][j] == word.charAt(0)) {
+                	if(word(board, word, i, j)) {
+                		return true;
+                	}
+                }
+            }
+        }
+        return false;
+    }
+    
+    
+    
+    public boolean word(char[][] board, String word, int x, int y) {
+    	for(int i = 1; i < word.length(); i++) {
+            System.out.println("Hello");
+    		if(above(board, word, x, y, i)) {
+                System.out.println("Above " + word.charAt(i));
+    			x -= 1;
+    		} else if (below(board, word, x, y, i)) {
+                System.out.println("Below " + word.charAt(i));
+    			x += 1;
+    		} else if (left(board, word, x, y, i)) {
+                System.out.println("Left " + word.charAt(i));
+    			y -= 1;
+    		} else if (right(board, word, x, y, i)) {
+                System.out.println("Right " + word.charAt(i));
+    			y += 1;
+    		} else {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    public boolean above(char[][] board, String word, int x, int y, int curr) {
+    	if(x < 1) return false;
+        return board[x-1][y] == word.charAt(curr);
+    }
+    
+    public boolean below(char[][] board, String word, int x, int y, int curr) {
+    	if (x > board.length - 2) return false;
+        return board[x+1][y] == word.charAt(curr);
+    }
+    
+    public boolean left(char[][] board, String word, int x, int y, int curr) {
+    	if (y < 1) return false;
+        return board[x][y-1] == word.charAt(curr);
+    }
+    
+    public boolean right(char[][] board, String word, int x, int y, int curr) {
+    	if (y >= board[1].length) return false;
+        return board[x][y+1] == word.charAt(curr);
+    }
+	
 	public boolean isAnagram(String s, String t) {
+
 		HashMap<Character, Integer> letters = new HashMap<>();
 		for(char c : s.toCharArray()) {
 			if(letters.containsKey(c)) {
@@ -65,6 +153,27 @@ public class LeetCode {
 		Arrays.sort(str2);
 		return Arrays.equals(str1, str2);
 	}
+	
+	public List<List<String>> groupAnagrams(String[] strs) {
+		List<List<String>> ret = new ArrayList<List<String>>();
+		
+		if(strs.length == 0) {
+			return ret;
+		}
+		
+		HashMap<String, List<String>> map = new HashMap<>();
+		for(String s : strs) {
+			char[] str = s.toCharArray();
+			Arrays.sort(str);
+			String key = String.valueOf(str);
+			if(!map.containsKey(key)) {
+				map.put(key, new ArrayList<String>());
+			}
+			map.get(key).add(s);
+		}
+		
+		return new ArrayList<List<String>>(map.values());
+    }
 	
 	public void deleteNode(ListNode node) {
 		if(node.next == null) return;
@@ -318,12 +427,10 @@ public class LeetCode {
 	public static void subsetsHelper(List<List<Integer>> list, List<Integer> curr, int[] nums, int n) {
         list.add(new ArrayList<>(curr));
         
-        if(n != nums.length) {
-	        for(int i = n; i < nums.length; i++) {
-		        curr.add(nums[i]);
-		       	subsetsHelper(list, curr, nums, i);
-		       	curr.remove(curr.size() - 1);
-	        }
+        for(int i = n; i < nums.length; i++) {
+	        curr.add(nums[i]);
+	       	subsetsHelper(list, curr, nums, i);
+	       	curr.remove(curr.size() - 1);
         }
     } 
     
@@ -380,6 +487,14 @@ public class LeetCode {
                 used[i] = false;
             }
         }
+    }
+    
+    public static boolean checkPermutation(String s, String t) {
+    	char[] a = s.toCharArray();
+    	char[] b = t.toCharArray();
+    	Arrays.sort(a);
+    	Arrays.sort(b);
+    	return a.equals(b);
     }
 	
 	public static void main(String[] args) {
