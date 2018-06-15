@@ -1,9 +1,11 @@
+import java.awt.Point;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
@@ -307,10 +309,6 @@ public class LeetCode {
 	}
 	
 	public static List<Integer> topKFrequent(int[] nums, int k) {
-        List<Integer> ret = new ArrayList<>();
-        List<Pair<Integer, Integer>> temp = new ArrayList<>();
-        
-        
 		
 		
         return new ArrayList<>();
@@ -442,6 +440,21 @@ public class LeetCode {
         System.out.println();
     }
 	
+    public static boolean checkBalanced(TreeNode root) {
+    	if(root == null) {
+    		return true;
+    	}
+    	
+    	return Math.abs(checkHelper(root.left) - checkHelper(root.right)) <= 1;
+    }
+    
+    public static int checkHelper(TreeNode root) {
+    	if(root == null) {
+    		return 0;
+    	}
+    	return checkHelper(root.left) < checkHelper(root.right) ? 1 + checkHelper(root.left) : 1 + checkHelper(root.right);
+    }
+    
     public List<List<Integer>> permute(int[] nums) {
         List<List<Integer>> res = new ArrayList<List<Integer>>();
         permuteHelper(nums, res, new ArrayList<Integer>());
@@ -494,16 +507,239 @@ public class LeetCode {
     	char[] b = t.toCharArray();
     	Arrays.sort(a);
     	Arrays.sort(b);
+    	
     	return a.equals(b);
     }
-	
-	public static void main(String[] args) {
-		int[] test = {1, 1, 1, 2, 2, 3};
-		int len = 2;
-		List<Integer> res = topKFrequent(test, len);
+    
+    public static boolean oneAway(String s, String t) {
+    	if(Math.abs(s.length() - t.length()) > 1) {
+    		return false;
+    	}
+    	
+    	List<Character> chars = new ArrayList<>();
+    	
+    	for(int i = 0; i < s.length(); i++) {
+    		chars.add(s.charAt(i));
+    	}
+    	
+    	for(int j = 0; j < t.length(); j++) {
+    		Character curr = t.charAt(j);
+    		if(chars.contains(curr)) {
+    			chars.remove(curr);
+    		} else {
+    			chars.add(curr);
+    		}
+    	}
+    	if(chars.size() <= 1) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    	
+    }
+    
+    public static String stringCompression(String s) {
+    	StringBuilder ret = new StringBuilder();
+    	Character curr = s.charAt(0);
+    	int count = 1;
+    	
+    	for(int i = 1; i < s.length(); i++) {
+    		if(s.charAt(i) == curr) {
+    			count++;
+    		} else {
+    			ret.append(curr);
+    			ret.append(count);
+    			curr = s.charAt(i);
+    			count = 1;
+    		}
+    	}
+    	ret.append(curr);
+		ret.append(count);
 		
-		for(int i = 0; i < len; i++) {
-			System.out.println(res.get(i));
-		}
+    	return new String(ret);
+    }
+	
+    public static boolean isPalindrome(LinkedList<Integer> list) {
+    	int curr = list.size() - 1;
+    	for(int i = 0; i < list.size(); i++) {
+    		if(list.get(i) != list.get(curr--)) {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
+    public static boolean validBST(TreeNode root) {
+    	if (root == null) {
+    		return true;
+    	}
+    	
+    	int leftHeight = treeHeight(root.left);
+    	int rightHeight = treeHeight(root.right);
+    	int heightDif = Math.abs(leftHeight - rightHeight);
+    	
+    	if(heightDif > 1 ) {
+    		return false;
+    	} else {
+        	return validBST(root.left) && validBST(root.right);
+    	}
+    	
+    }
+    
+    public static int treeHeight(TreeNode root) {
+    	if(root == null) {
+    		return 0;
+    	}
+    	
+    	return 1 + Math.max(treeHeight(root.left), treeHeight(root.right));
+    }
+    
+    public static List<List<Integer>> levelOrder(TreeNode root) {
+    	ArrayList<List<Integer>> ret = new ArrayList<List<Integer>> ();
+    	levelOrderHelper(root, ret, 0);
+        
+        for(int i = ret.size() - 1; i >= 0; i--) {
+            if(ret.get(i).isEmpty()) {
+                ret.remove(i);
+            }
+        }
+        
+    	return ret;
+    }
+    
+    public static void levelOrderHelper(TreeNode root, ArrayList<List<Integer>> ret, int level) {
+    	if(root == null) {
+    		return;
+    	}
+    	
+    	if(ret.size() < level) {
+    		ret.get(level).add(root.val);
+    	} else {
+    		ret.add(new ArrayList<>());
+    		ret.get(level).add(root.val);
+    	}
+    	levelOrderHelper(root.left, ret, level+1);
+    	levelOrderHelper(root.right, ret, level+1);
+    }
+    
+    public static TreeNode commonAncestor(TreeNode root, TreeNode a, TreeNode b) {
+    	if(root == null) {
+    		return null;
+    	}
+    	
+    	if(treeContains(root, a) && treeContains(root, b)) {
+    		return root;
+    	} 
+    	
+    	commonAncestor(root.left, a, b);
+    	commonAncestor(root.left, a, b);
+    	return null;
+    	
+    }
+    
+    public static boolean treeContains(TreeNode root, TreeNode t) {
+    	if(root == null) {
+    		return false;
+    	}
+    	
+    	if(root.val == t.val) {
+    		return true;
+    	} else {
+    		return treeContains(root.left, t) || treeContains(root.right, t);
+    	}
+    	
+    }
+    
+    public static int countWays(int n) {
+    	int[] arr = new int[n + 1];
+    	Arrays.fill(arr, -1);
+    	return countWays(0, n, arr);
+    }
+    
+    public static int countWays(int curr, int n, int[] arr) {
+    	if (curr > n) {
+    		return 0;
+    	} else if (n == curr) {
+    		return 1;
+    	} else if (arr[curr] > -1) {
+    		return arr[curr];
+    	} else {
+    		arr[curr] = countWays(curr + 1, n, arr) + countWays(curr + 2, n, arr) + countWays(curr + 3, n, arr);
+    		return arr[curr];
+    	}
+    }
+    
+    public static ArrayList<Point> getPath(boolean[][] maze) {
+    	if(maze.length == 0 || maze == null) {
+    		return null;
+    	}
+    	
+    	int row = maze.length - 1;
+    	int col = maze[0].length - 1;
+    	ArrayList<Point> path = new ArrayList<>();
+    	//boolean[][] map = new boolean[row][col];
+    	HashSet<Point> map = new HashSet<>();
+    	
+    	if(getPath(maze, path, row, col, map)) {
+    		return path;
+    	}
+    	return null;
+    }
+
+    public static boolean getPath(boolean[][] maze, ArrayList<Point> path, int row, int col, HashSet<Point> map) {
+    	if(row < 0 || col < 0 || !maze[row][col]) {
+    		return false;
+    	}
+    	Point curr = new Point(row, col);
+    	
+    	boolean isOrigin = row == 0 && col == 0;
+    	
+    	if(map.contains(curr)) {
+    		return false;
+    	}
+    	
+    	if(isOrigin || getPath(maze, path, row - 1, col, map) || getPath(maze, path, row, col - 1, map)) {
+    		path.add(new Point(row, col));
+    		return true;
+    	}
+
+    	map.add(curr);
+    	return true;
+    }
+    
+    public static ArrayList<List<Integer>> powerSet(ArrayList<Integer> arr) {
+    	ArrayList<List<Integer>> ret = new ArrayList<List<Integer>>();
+    	powerSet(arr, ret, new ArrayList<>(), 0);
+    	return ret;
+    }
+    
+    public static void powerSet(ArrayList<Integer> arr, ArrayList<List<Integer>> ret, ArrayList<Integer> temp, int index) {
+    	ret.add(temp);
+    	
+    	for(int i = index; i < arr.size(); i++) {
+    		temp.add(arr.get(i));
+    		powerSet(arr, ret, temp, index + 1);
+    		temp.remove(temp.size() - 1);
+    	}
+    }
+    
+	public static void main(String[] args) {
+		String s = "Jemuel";
+		String t = "Jemual";
+		
+		LinkedList<Integer> list = new LinkedList<>();
+		list.add(1);
+		list.add(2);
+		list.add(3);
+		list.add(4);
+		list.add(1);
+		
+		TreeNode tree = new TreeNode(5);
+		tree.left = new TreeNode(3);
+		tree.left.left = new TreeNode(0);
+		//tree.left.left.left = new TreeNode(10);
+		tree.right = new TreeNode(8);
+		
+		
 	}
 }
