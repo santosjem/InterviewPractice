@@ -263,6 +263,27 @@ public class crackingTheCodingInterview {
 		}
 	}
 	
+	public static int magicIndex(int[]  arr) {
+		if(arr.length == 0) {
+			return -1;
+		}
+		return magicIndex(arr, 0, arr.length - 1);
+	}
+	
+	public static int magicIndex(int[] arr, int low, int high) {
+		if(high < low) {
+			return -1;
+		}
+		int mid = low + high / 2;
+		if(mid > arr[mid]) {
+			return magicIndex(arr, low, mid - 1);
+		} else if (mid <= arr[mid]) {
+			return magicIndex(arr, mid, high);
+		} else {
+			return mid;
+		}
+	}
+	
 	public static void main(String args[]) {
 		System.out.println(oneAway("", ""));
 	}
