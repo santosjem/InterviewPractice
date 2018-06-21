@@ -1,12 +1,21 @@
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
+
+
 public class crackingTheCodingInterview {
 	
-	public class LinkedList<T> {
+	public static class LinkedList<T> {
 		T val;
 		LinkedList<T> next;
+		
+		LinkedList() {
+			this.val = null;
+			this.next = null;
+		}
+		
 	}
 	
 	/* CHAPTER 1 */
@@ -185,6 +194,73 @@ public class crackingTheCodingInterview {
 			}
 		}
 		
+	}
+	
+	public static LinkedList<Integer> returnKthToLast(LinkedList<Integer> node, int k) {
+    	LinkedList<Integer> fast = new LinkedList<>();
+    	LinkedList<Integer> ans = new LinkedList<>();
+    	
+    	while(k >= 0) {
+    		fast = fast.next;
+    		k--;
+    	}
+    	
+    	while(fast.next != null) {
+    		fast = fast.next;
+    		ans = ans.next;
+    	}
+    	
+    	return ans;	
+    }
+	
+	public static boolean deleteMiddleNode(LinkedList<Integer> node) {
+		if(node == null || node.next == null) {
+			return false;
+		}
+		
+		node.val = node.next.val;
+		node.next = node.next.next;
+		
+		return true;
+	}
+	
+	/* Recursion and Dynamic Programming */
+	public static int countWays(int n) {
+		int[] ways = new int[n + 1];
+		Arrays.fill(ways, -1);
+		return countWays(n, ways);
+	}
+	
+	public static int countWays(int n, int[] ways) {
+		if(n < 0) {
+			return 0;
+		} else if (n == 0) {
+			return 1;
+		} else if (ways[n] > -1) {
+			return ways[n];
+		} else {
+			ways[n] =  countWays(n - 3) + countWays(n - 2) + countWays(n - 1);
+			return ways[n];
+		}
+	}
+	
+	public static ArrayList<Point> getPath(boolean[][] maze) {
+		ArrayList<Point> path = new ArrayList<>();
+		if(getPath(maze, maze.length, maze[0].length, path)) {
+			return path;
+		};
+		return null;
+	}
+	
+	public static boolean getPath(boolean[][] maze, int row, int col, ArrayList<Point> path) {
+		if(row == 0 && col == 0) {
+			return true;
+		} else if (row < 0 || col < 0) {
+			return false;
+		} else {
+			path.add(new Point(row, col));
+			return getPath(maze, row - 1, col, path) || getPath(maze, row, col - 1, path);
+		}
 	}
 	
 	public static void main(String args[]) {
