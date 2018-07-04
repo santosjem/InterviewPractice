@@ -15,6 +15,13 @@ public class LeetCode {
 		ListNode(int x) { val = x; }
 	}
 	
+	public class TreeNode {
+		int val;
+		TreeNode left;
+		TreeNode right;
+		TreeNode(int x) { val = x; }
+	}
+	
 	public boolean isAnagram(String s, String t) {
 		HashMap<Character, Integer> letters = new HashMap<>();
 		for(char c : s.toCharArray()) {
@@ -88,8 +95,46 @@ public class LeetCode {
         return ret; 
     }
 	
+	public static int missingNumber(int[] nums) {
+		HashSet<Integer> hash = new HashSet<>();
+		int max = Integer.MIN_VALUE;
+		for(int i = 0; i < nums.length; i++) {
+			hash.add(nums[i]);
+			if(nums[i] > max) {
+				max = nums[i];
+			}
+		}
+		
+		for(int j = 0; j < max + 1; j++) {
+			if(!hash.contains(j)) {
+				return j;
+			}
+		}
+		return 1;
+	}
+	
+
+	
+	public static String removeDups(String s) {
+		char[] str = s.toCharArray();
+		Arrays.sort(str);
+		int i = 0;
+		int j = 1;
+		
+		while(j != s.length() - 1) {
+			if(str[i] != str[j]) {
+				str[i++] = str[j++];
+			} else {
+				j++;
+				i++;
+			}
+		}
+		// iiiaadsf
+		return new String(str);
+		
+	}
 	
 	public static void main(String[] args) {
-		System.out.println("This is for testing");
+		System.out.println(removeDups("Jemuel"));
 	}
 }
