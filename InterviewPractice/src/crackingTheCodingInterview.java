@@ -1,7 +1,9 @@
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+
 
 
 
@@ -16,6 +18,21 @@ public class crackingTheCodingInterview {
 			this.next = null;
 		}
 		
+	}
+	
+	public static class TreeNode {
+		Integer val;
+		TreeNode left;
+		TreeNode right;
+		TreeNode(Integer x) { val = x; }
+	}
+	
+	public static String reverse(String str) {
+		StringBuilder ret = new StringBuilder();
+		for(int i = str.length()-1; i >= 0; i--) {
+			ret.append(str.charAt(i));
+		}
+		return new String(ret);
 	}
 	
 	/* CHAPTER 1 */
@@ -33,9 +50,22 @@ public class crackingTheCodingInterview {
 		return true;
 	}
 	
+	public static boolean isUnique2(String str) {
+		HashSet<Character> hash = new HashSet<>();
+		for (Character c : str.toCharArray()) {
+			if(hash.contains(c)) {
+				return false;
+			} else {
+				hash.add(c);
+			}
+		}
+		return true;
+	}
+	
 	/* More efficient isUnique O(n) */
 	public static boolean betterIsUnique(String str) {
 		HashSet<Character> hash = new HashSet<>();
+		
 		for(int i = 0; i < str.length(); i++) {
 			if(hash.contains(str.charAt(i))) {
 				return false;
@@ -62,6 +92,19 @@ public class crackingTheCodingInterview {
 			}
 		}
 		return true;
+	}
+	
+	public static boolean checkPermutations2(String first, String second) {
+		if(first.length() != second.length()) {
+			return false;
+		}
+		
+		char[] firstArray = first.toCharArray();
+		char[] secondArray = second.toCharArray();
+		Arrays.sort(firstArray);
+		Arrays.sort(secondArray);
+		
+		return firstArray.toString().equals(secondArray.toString());
 	}
 	
 	
@@ -224,24 +267,60 @@ public class crackingTheCodingInterview {
 		return true;
 	}
 	
-	/* Recursion and Dynamic Programming */
-	public static int countWays(int n) {
-		int[] ways = new int[n + 1];
-		Arrays.fill(ways, -1);
-		return countWays(n, ways);
+	/* Trees and Graphs */
+	public static ArrayList<LinkedList<TreeNode>> createLinkedList(TreeNode root) {
+		ArrayList<LinkedList<TreeNode>> ret = new ArrayList<>();
+		createLinkedList(root, ret, 0);
+		return ret;
 	}
 	
-	public static int countWays(int n, int[] ways) {
-		if(n < 0) {
-			return 0;
-		} else if (n == 0) {
-			return 1;
-		} else if (ways[n] > -1) {
-			return ways[n];
-		} else {
-			ways[n] =  countWays(n - 3) + countWays(n - 2) + countWays(n - 1);
-			return ways[n];
+	public static void createLinkedList(TreeNode cur, ArrayList<LinkedList<TreeNode>> ret, int level) {
+		if (cur == null) {
+			return;
 		}
+		
+		if(ret.get(level) == null) {
+			ret.add(new LinkedList<TreeNode>());
+			ret.get(level).val = cur;
+		} else {
+			ret.get(level).val = cur;
+		}
+		createLinkedList(cur.left, ret, level+1);
+		createLinkedList(cur.right, ret, level+1);
+	}
+	
+	public static boolean validBST(TreeNode root) {
+    	return validBST(root, null, null);
+    }
+    
+    public static boolean validBST(TreeNode cur, Integer min, Integer max) {
+    	if(cur == null) {
+    		return true;
+    	}
+    	
+    	if((min != null && cur.val < min) || (max != null && cur.val > max)) {
+    		return false;
+    	}
+    	
+    	if(!validBST(cur.left, min, cur.val) || !validBST(cur.right, cur.val, max)) {
+    		return false;
+    	}
+    	
+    	return true;
+    }
+	
+	/* Recursion and Dynamic Programming */
+    /* Brute Force */
+    public static int countWays(int n) {
+		if(n < 0) return 0;
+		if(n == 0) return 1;
+		
+		return countWays2(n-1) + countWays2(n-2) + countWays2(n-3);	
+	}
+    
+    /* Dynamic Programming */
+	public static int countWays2(int n) {
+		return 10;
 	}
 	
 	public static ArrayList<Point> getPath(boolean[][] maze) {
@@ -284,7 +363,53 @@ public class crackingTheCodingInterview {
 		}
 	}
 	
+	public static ArrayList<ArrayList<Integer>> subsets(ArrayList<Integer> set) {
+		if(set.size() == 0) {
+			return null;
+		}
+		ArrayList<ArrayList<Integer>> ret = new ArrayList<>();
+		subsets(set, new ArrayList<Integer>(), ret, 0);
+		return ret;
+	}
+	
+	public static void subsets(ArrayList<Integer> set, ArrayList<Integer> temp, ArrayList<ArrayList<Integer>> ret, int index) {
+		if(index == set.size()) {
+			ret.add(new ArrayList<>(temp));
+		} else {
+			temp.add(set.get(index));
+			subsets(set, temp, ret, index + 1);
+			temp.remove(temp.size() - 1);
+			subsets(set, temp, ret, index + 1);
+		}
+	} 
+
+	
+	
 	public static void main(String args[]) {
-		System.out.println(oneAway("", ""));
+		ArrayList<Integer> arr = new ArrayList<>();
+		arr.add(1);
+		arr.add(2);
+		arr.add(3);
+		ArrayList<ArrayList<Integer>> array = subsets(arr);
+		//System.out.println(checkPermutations2("jemuel", "leumej"));
+		
+		
+		TreeNode tree = new TreeNode(50);
+		tree.left = new TreeNode(25);
+		tree.left.left = new TreeNode(10);
+		tree.left.left.left = new TreeNode(5);
+		tree.left.left.right = new TreeNode(15);
+		tree.left.left.right.left = new TreeNode(12);
+		tree.right = new TreeNode(75);
+		tree.right.right = new TreeNode(100);
+		tree.right.left = new TreeNode(90);
+		
+		TreeNode tree2 = new TreeNode(50);
+		tree2.left = new TreeNode(25);
+		tree.right = new TreeNode(75);
+		
+		System.out.println(validBST(tree2));
+		
+		System.out.println(countWays(10) + " " + countWays2(10));
 	}
 }

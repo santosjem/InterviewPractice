@@ -1,5 +1,6 @@
 import java.awt.Point;
 import java.lang.reflect.Array;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Stack;
 
 import javax.activation.MailcapCommandMap;
@@ -723,6 +725,39 @@ public class LeetCode {
     	}
     }
     
+    public void rotate(int[] nums, int k) {
+        int i = 0;
+        Queue<Integer> que = new LinkedList<>(); 
+        que.add(nums[i]);
+        while(true) {
+            int switchNum = (i + k) % nums.length;
+            que.add(nums[switchNum]);
+            nums[switchNum] = que.poll();
+            i = switchNum;
+            if(i == 0) {
+                return;
+            }
+        }  
+    }
+    
+    public static int longestBranch(TreeNode n) {
+    	if(n == null) {
+    		return 0;
+    	}
+    	if(n.left != null && n.right != null) {
+    		return 1 + Math.max(longestBranch(n.left), longestBranch(n.right));
+    	} else if (n.left == null) {
+    		return 1 + longestBranch(n.right);
+    	} else {
+    		return 1 + longestBranch(n.left);
+    	}
+    }
+    
+    public static int getHeight(TreeNode n) {
+    	if(n == null) return -1;
+    	
+    	return 1 + Math.max(getHeight(n.left), getHeight(n.right));
+    }
     
     
     /* Main Program to test code */ 
@@ -740,9 +775,15 @@ public class LeetCode {
 		TreeNode tree = new TreeNode(5);
 		tree.left = new TreeNode(3);
 		tree.left.left = new TreeNode(0);
-		//tree.left.left.left = new TreeNode(10);
+		tree.left.left.left = new TreeNode(6);
+		tree.left.left.right = new TreeNode(15);
+		tree.left.left.right.left = new TreeNode(20);
 		tree.right = new TreeNode(8);
+		tree.right.right = new TreeNode(10);
+		tree.right.left = new TreeNode(6);
+
 		
+		System.out.println(longestBranch(tree) + " " + getHeight(tree));
 		
 	}
 }
