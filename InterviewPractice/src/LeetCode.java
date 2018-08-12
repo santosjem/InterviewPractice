@@ -1,17 +1,12 @@
 import java.awt.Point;
-import java.lang.reflect.Array;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
-
-import javax.activation.MailcapCommandMap;
 
 /*
  * All of the solutions added on here are answers to problems
@@ -43,25 +38,26 @@ public class LeetCode {
 	
 	public List<String> letterCasePermutation(String S) {
         List<String> ret = new ArrayList<>();
-        helper(S.toCharArray(), 0, "", ret);
+        letterCasePermutation(S.toCharArray(), 0, "", ret);
         return ret;
         
     }
     
 	
-    public void helper(char[] string, int index, String curr, List<String> ret) {
+    public void letterCasePermutation(char[] string, int index, String curr, List<String> ret) {
         if(index == string.length) {
             ret.add(curr);
         }  else {
             if(Character.isLetter(string[index])) {
-                helper(string, index + 1, curr + Character.toLowerCase(string[index]), ret);
-                helper(string, index + 1, curr + Character.toUpperCase(string[index]), ret);                   
+            	letterCasePermutation(string, index + 1, curr + Character.toLowerCase(string[index]), ret);
+            	letterCasePermutation(string, index + 1, curr + Character.toUpperCase(string[index]), ret);                   
             } else {
                 curr = curr + string[index];
-                helper(string, index + 1, curr, ret);
+                letterCasePermutation(string, index + 1, curr, ret);
             }
         }
     }
+    
     
     public boolean exist(char[][] board, String word) {
         if(word == null) {
@@ -796,12 +792,37 @@ public class LeetCode {
     	return 1 + Math.max(getHeight(n.left), getHeight(n.right));
     }
     
+    public static Pair<Integer, Integer> longestContiguousSubseq(int[] arr) {
+		int max = 0;
+		HashMap<Integer, Pair<Integer, Integer>> hm = new HashMap<>();
+		int currInd = 0;
+		int curr = 0;
+		for(int i = 0; i < arr.length; i++) {
+			if(curr + arr[i] > 0) {
+				if(curr + arr[i] > max) {
+					max = curr + arr[i];
+					hm.put(max, new Pair(currInd, i));
+				}
+			} else {
+				currInd = i + 1;
+				curr = 0;
+			}
+		}
+		System.out.println(max);
+		return hm.get(max);
+	}
+    
+    public static void printPair(Pair<Integer, Integer> pair) {
+    	System.out.println(pair.val1);
+    	System.out.println(pair.val2);
+    }
     
     /* Main Program to test code */ 
 	public static void main(String[] args) {
 		System.out.println(removeDups("Jemuel"));
-		String s = "Jemuel";
-		String t = "Jemual";
+		List<Integer> lst = new ArrayList<>();
+		
+		int[] arr = {1, 9, -2 ,3, 6, -3, -1};
 		
 		LinkedList<Integer> list = new LinkedList<>();
 		list.add(1);
@@ -822,6 +843,10 @@ public class LeetCode {
 
 		
 		System.out.println(longestBranch(tree) + " " + getHeight(tree));
+		printPair(longestContiguousSubseq(arr));
+		
+		
+		
 		
 	}
 }

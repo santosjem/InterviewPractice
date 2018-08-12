@@ -318,10 +318,22 @@ public class crackingTheCodingInterview {
 		return countWays2(n-1) + countWays2(n-2) + countWays2(n-3);	
 	}
     
-    /* Dynamic Programming */
-	public static int countWays2(int n) {
-		return 10;
-	}
+    public static int countWays2(int n) {
+    	int[] ways = new int[n + 1];
+    	Arrays.fill(ways, -1);
+    	return countWays2(n, ways);
+    }
+    
+    public static int countWays2(int n, int[] ways) {
+    	if(n < 0) return 0;
+    	if(n == 0) return 1;
+    	
+    	if(ways[n] > -1) return ways[n];
+    	
+    	ways[n] = countWays2(n-1 ,ways) + countWays2(n-2, ways) + countWays2(n-3, ways);
+    	 
+    	return ways[n];
+    }
 	
 	public static ArrayList<Point> getPath(boolean[][] maze) {
 		ArrayList<Point> path = new ArrayList<>();
@@ -341,6 +353,7 @@ public class crackingTheCodingInterview {
 			return getPath(maze, row - 1, col, path) || getPath(maze, row, col - 1, path);
 		}
 	}
+	
 	
 	public static int magicIndex(int[]  arr) {
 		if(arr.length == 0) {
@@ -391,7 +404,7 @@ public class crackingTheCodingInterview {
 		arr.add(2);
 		arr.add(3);
 		ArrayList<ArrayList<Integer>> array = subsets(arr);
-		//System.out.println(checkPermutations2("jemuel", "leumej"));
+		System.out.println(array);
 		
 		
 		TreeNode tree = new TreeNode(50);
