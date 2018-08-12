@@ -395,7 +395,56 @@ public class crackingTheCodingInterview {
 			subsets(set, temp, ret, index + 1);
 		}
 	} 
+	
+	public static ArrayList<String> getPerms(String str) {
+		ArrayList<String> ret = new ArrayList<>();
+		char[] strArr = str.toCharArray();
+		Arrays.sort(strArr);
+		getPerms(strArr, ret, new boolean[str.length()], new StringBuilder());
+		return ret;
+	}
 
+	public static void getPerms(char[] str, ArrayList<String> ret, boolean[] used, StringBuilder temp) {
+		if(temp.length() == str.length) {
+			ret.add(new String(temp));
+		} else {
+			for(int i = 0; i < str.length; i++) {
+				if(used[i] || i > 0 && str[i] == str[i - 1] && !used[i - 1]) continue;
+				temp.append(str[i]);
+				used[i] = true;
+				getPerms(str, ret, used, temp);
+				temp.delete(temp.length() - 1, temp.length());
+				used[i] = false;
+				
+			}
+		}
+	}
+	
+	public static int coins(int n) {
+		int[] vals = {25, 10, 5, 1};
+		return coins(n, vals, 0);
+		
+	}
+	
+	public static int coins(int n, int[] vals, int ind) {
+		if(n == 0) {
+			return 1;
+		}
+		if(n < 0) {
+			return 0;
+		}
+		if(ind == 0) {
+			return coins(n - vals[ind], vals, ind) + coins(n - vals[ind + 1], vals, ind + 1)
+				+ coins(n - vals[ind + 2], vals, ind + 2) + coins(n - vals[ind + 3], vals, ind + 3);
+		} else if (ind == 1) {
+			return coins(n - vals[ind], vals, ind) + coins(n - vals[ind + 1], vals, ind + 1)
+			+ coins(n - vals[ind + 2], vals, ind + 2);
+		} else if (ind == 2) {
+			return coins(n - vals[ind], vals, ind) + coins(n - vals[ind + 1], vals, ind + 1);
+		} else {
+			return coins(n - vals[ind], vals, ind);
+		}
+	}
 	
 	
 	public static void main(String args[]) {
@@ -424,5 +473,7 @@ public class crackingTheCodingInterview {
 		System.out.println(validBST(tree2));
 		
 		System.out.println(countWays(10) + " " + countWays2(10));
+		System.out.println(coins(25));
+		
 	}
 }

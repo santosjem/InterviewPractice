@@ -144,9 +144,9 @@ public class LeetCode {
 		return letters.isEmpty();
 	}
 	
-	public boolean betterIsAnagram(String s, String t) {
+	public static boolean betterIsAnagram(String s, String t) {
 		if (s.length() != t.length()) return false;
-		
+		System.out.println(s + " " + t);
 		char[] str1 = s.toCharArray();
 		char[] str2 = s.toCharArray();
 		Arrays.sort(str1);
@@ -156,7 +156,7 @@ public class LeetCode {
 	
 	public List<List<String>> groupAnagrams(String[] strs) {
 		List<List<String>> ret = new ArrayList<List<String>>();
-		
+	
 		if(strs.length == 0) {
 			return ret;
 		}
@@ -817,12 +817,48 @@ public class LeetCode {
     	System.out.println(pair.val2);
     }
     
+    public static int bestThree(int[] arr, int n, int curr) {
+    	if(n == 0) {
+    		return 1;
+    	}
+    	if(curr >= arr.length) return 0;
+
+    	return Math.max(bestThree(arr, n, curr+1), arr[curr] * bestThree(arr, n - 1, curr + 1));
+
+    }
+    
+    /* MIT Question */
+    public static void reverseSentence(String sent) {
+    	StringBuilder ret = new StringBuilder();
+    	String temp = "";
+    	
+    	for(int i = sent.length() - 2; i >= 0; i--) {
+    		if(sent.charAt(i) == ' ') {
+    			ret.append(temp);
+    			ret.append(" ");
+    			temp = "";
+    		} else {
+    			temp = sent.charAt(i) + temp;
+    		}
+    	}
+    	ret.append(temp);
+		ret.append('.');
+		
+    	System.out.println(new String(ret));
+    }
+    
+    
     /* Main Program to test code */ 
 	public static void main(String[] args) {
 		System.out.println(removeDups("Jemuel"));
 		List<Integer> lst = new ArrayList<>();
 		
 		int[] arr = {1, 9, -2 ,3, 6, -3, -1};
+		
+		int[] arr = {-10, -7, 2, 4};
+		System.out.println(bestThree(arr, 3, 0));
+		
+		System.out.println("Anagram? " + betterIsAnagram("aaabb", "bbaaj"));
 		
 		LinkedList<Integer> list = new LinkedList<>();
 		list.add(1);
@@ -848,5 +884,6 @@ public class LeetCode {
 		
 		
 		
+		reverseSentence("I am Jemuel.");
 	}
 }
